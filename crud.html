@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUDFIREBASE</title>
+    <style>
+        label {
+            display: inline-block;
+            width: 90px;
+        }
+    </style>
+</head>
+
+<body>
+    <label>Nombre</label> <input id="NameBox" type="text">
+    <label>Numero</label> <input id="RollBox" type="text">
+    <label>Seccion</label> <input id="SecBox" type="text">
+    <label>Nombre</label>
+    <select id="GenBox">
+        <option value="Macho">Macho</option>
+        <option value="Hembra">Hembra</option>
+    </select>
+    <hr>
+    <button id="Insbtn">INSERT</button>
+    <button id="Selbtn">SELECT</button>
+    <button id="Updbtn">UPDATE</button>
+    <button id="Delbtn">DELETE</button>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBaAiAQ5mo2qDtBuoBwwiu2S-gFH9WpnuU",
+            authDomain: "baseprueba-785d3.firebaseapp.com",
+            projectId: "baseprueba-785d3",
+            storageBucket: "baseprueba-785d3.appspot.com",
+            messagingSenderId: "1059092099596",
+            appId: "1:1059092099596:web:53061c9ecb6f29df2cb429"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        import { getDatabase, ref, get, set, child, update, remove }
+            from "https://www.gstatic.com/firebasejs/9.4.1/firebase-database.js";
+        const db = getDatabase();
+
+        var nameBox = document.getElementById("NameBox");
+        var rollBox = document.getElementById("RollBox");
+        var secBox = document.getElementById("SecBox");
+        var genBox = document.getElementById("GenBox");
+
+        var insBtn = document.getElementById("Insbtn");
+        var selBtn = document.getElementById("Selbtn");
+        var updBtn = document.getElementById("Updbtn");
+        var delBtn = document.getElementById("Delbtn");
+
+
+        function insertarDatos() {
+            set(ref(db, "Datos/" + rollBox.value), {
+                NombreEstudiante: nameBox.value,
+                NumeroEstudiante: rollBox.value,
+                SeccionEstudiante: secBox.value,
+                SexoEstudiante: genBox.value
+
+            })
+                .then(() => {
+                    alert("datos guardados exitosamente");
+                })
+                .catch((error) => {
+                    alert("datos no guardados" + error);
+                })
+        }
+
+        function seleccionDatos() {
+            const dbref = ref(db);
+            get(child(dbref,"Datos/" + rollBox.value)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    nameBox.value = snapshot.val().NombreEstudiante;
+                    secBox.value = snapshot.val().SeccionEstudiante;
+                    genBox.value = snapshot.val().SexoEstudiante;
+                } else {
+                    alert("no datos");
+                 }
+
+            })
+                .catch((error) => {
+                    alert("datos no encontrados"+error);
+                });
+        }
+
+        insBtn.addEventListener('click', insertarDatos);
+        selBtn.addEventListener('click', seleccionDatos);
+
+    </script>
+
+</body>
+
+</html>
